@@ -56,7 +56,7 @@ if (commandLineOptions.header) {
         if (matchKeyValue) {
             requestHeaders.set(matchKeyValue[1], matchKeyValue[2]);
         } else {
-            console.error('Cannot parse header: ' + matchKeyValue);
+            console.error('Cannot parse header: ' + header);
         }
     });
 }
