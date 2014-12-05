@@ -3,13 +3,17 @@
 
 var unexpected = require('unexpected'),
     commandLineOptions = require('optimist')
-    .usage('$0 [-X <method>] [-H <header>] url')
+    .usage('$0 [--verbose] [-X <method>] [-H <header>] url [expectations...]')
     .option('header', {
         alias: 'H',
         type: 'string'
     })
     .option('method', {
         alias: 'X',
+        type: 'string'
+    })
+    .option('cookie', {
+        alias: 'b',
         type: 'string'
     })
     .option('verbose', {
@@ -39,12 +43,17 @@ if (commandLineOptions.header) {
         var matchKeyValue = header.match(/^([^:]*):\s?(.*)$/);
         if (matchKeyValue) {
             var headerName = matchKeyValue[1],
-                headerValue =  matchKeyValue[2];
+                headerValue = matchKeyValue[2];
             (requestProperties.headers[headerName] = requestProperties.headers[headerName] || []).push(headerValue);
         } else {
             console.error('Cannot parse header: ' + matchKeyValue);
         }
     });
+}
+
+if (commandLineOptions.cookie) {
+    requestProperties.headers = requestProperties.headers || {};
+    (requestProperties.headers.Cookie = requestProperties.headers.Cookie || []).push(commandLineOptions.cookie);
 }
 
 var expectedResponseProperties;
