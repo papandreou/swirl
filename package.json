@@ -24,6 +24,7 @@
   "homepage": "https://github.com/papandreou/swirl",
   "dependencies": {
     "magicpen-prism": "0.2.0",
+    "messy": "3.1.1",
     "optimist": "0.6.1",
     "underscore": "1.7.0",
     "unexpected": "5.0.0-beta22",
