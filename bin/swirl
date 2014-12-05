@@ -8,6 +8,14 @@ var unexpected = require('unexpected'),
         alias: 'H',
         type: 'string'
     })
+    .option('upload-file', {
+        alias: 'T',
+        type: 'string'
+    })
+    .option('data', {
+        alias: ['d', 'data-ascii'],
+        type: 'string'
+    })
     .option('method', {
         alias: 'X',
         type: 'string'
@@ -23,7 +31,10 @@ var unexpected = require('unexpected'),
     .demand(1)
     .argv;
 
-var expect = unexpected.installPlugin(require('unexpected-http'));
+var unexpectedHttp = require('unexpected-http'),
+    messy = unexpectedHttp.messy,
+    fs = require('fs'),
+    expect = unexpected.installPlugin(unexpectedHttp);
 expect.output.installPlugin(require('magicpen-prism'));
 
 var url = commandLineOptions._.shift();
@@ -37,14 +48,13 @@ if (commandLineOptions.method) {
     requestProperties.method = commandLineOptions.method;
 }
 
+var requestHeaders = new messy.Headers();
+
 if (commandLineOptions.header) {
-    requestProperties.headers = {};
     (Array.isArray(commandLineOptions.header) ? commandLineOptions.header : [commandLineOptions.header]).forEach(function (header) {
         var matchKeyValue = header.match(/^([^:]*):\s?(.*)$/);
         if (matchKeyValue) {
-            var headerName = matchKeyValue[1],
-                headerValue = matchKeyValue[2];
-            (requestProperties.headers[headerName] = requestProperties.headers[headerName] || []).push(headerValue);
+            requestHeaders.set(matchKeyValue[1], matchKeyValue[2]);
         } else {
             console.error('Cannot parse header: ' + matchKeyValue);
         }
@@ -52,8 +62,7 @@ if (commandLineOptions.header) {
 }
 
 if (commandLineOptions.cookie) {
-    requestProperties.headers = requestProperties.headers || {};
-    (requestProperties.headers.Cookie = requestProperties.headers.Cookie || []).push(commandLineOptions.cookie);
+    requestHeaders.set('Cookie', commandLineOptions.cookie);
 }
 
 var expectedResponseProperties;
@@ -69,14 +78,52 @@ if (commandLineOptions._.length === 1 && typeof commandLineOptions._[0] === 'num
     };
 }
 
-expect(requestProperties, 'to yield response', expectedResponseProperties, function (err, context) {
-    if (err) {
-        console.error(err.message);
-        process.exit(1);
-    } else {
-        if (commandLineOptions.verbose) {
-            console.log(unexpected.inspect(context.httpExchange).toString(unexpected.outputFormat()));
-        }
-        process.exit(0);
+if (commandLineOptions.data) {
+    requestProperties.method = requestProperties.method || 'POST';
+    if (!requestHeaders.has('Content-Type')) {
+        requestHeaders.set('Content-Type', 'application/x-www-form-urlencoded');
     }
-});
+
+    requestProperties.body = (Array.isArray(commandLineOptions.data) ? commandLineOptions.data : [commandLineOptions.data]).map(function (data) {
+        if (/^@/.test(data)) {
+            return fs.readFileSync(data.substr(1), 'utf-8').replace(/\r|\n/g, '');
+        } else {
+            return data;
+        }
+    }).join('&');
+}
+
+var uploadFile = commandLineOptions['upload-file'];
+if (uploadFile) {
+    if (uploadFile === '.' || uploadFile === '-') {
+        var chunks = [];
+        process.stdin.on('data', function (chunk) {
+            chunks.push(chunk);
+        }).on('end', function () {
+            requestProperties.body = Buffer.concat(chunks);
+            performRequest();
+        });
+    } else {
+        requestProperties.body = fs.readFileSync(uploadFile);
+        performRequest();
+    }
+} else {
+    performRequest();
+}
+
+function performRequest() {
+    if (requestHeaders.toString() !== '') {
+        requestProperties.headers = requestHeaders;
+    }
+    expect(requestProperties, 'to yield response', expectedResponseProperties, function (err, context) {
+        if (err) {
+            console.error(err.message);
+            process.exit(1);
+        } else {
+            if (commandLineOptions.verbose) {
+                console.log(unexpected.inspect(context.httpExchange).toString(unexpected.outputFormat()));
+            }
+            process.exit(0);
+        }
+    });
+}
