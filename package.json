@@ -1,0 +1,41 @@
+{
+  "name": "swirl",
+  "version": "1.0.0",
+  "description": "CLI for testing HTTP servers using unexpected-http",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/papandreou/swirl.git"
+  },
+  "keywords": [
+    "test",
+    "http",
+    "server",
+    "assert",
+    "cli"
+  ],
+  "author": "Andreas Lind <andreas@one.com>",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/papandreou/swirl/issues"
+  },
+  "directories": {
+    "bin": "bin"
+  },
+  "homepage": "https://github.com/papandreou/swirl",
+  "dependencies": {
+    "magicpen-prism": "0.2.0",
+    "optimist": "0.6.1",
+    "underscore": "1.7.0",
+    "unexpected": "5.0.0-beta22",
+    "unexpected-http": "1.1.1"
+  },
+  "devDependencies": {
+    "jshint": "2.5.10",
+    "mocha": "2.0.1"
+  },
+  "scripts": {
+    "lint": "jshint . bin/swirl ",
+    "test": "mocha && npm run lint",
+    "travis": "npm test"
+  }
+}

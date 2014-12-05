@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+/*global console*/
+
+var unexpected = require('unexpected'),
+    commandLineOptions = require('optimist')
+    .usage('$0 [-X <method>] [-H <header>] url')
+    .option('header', {
+        alias: 'H',
+        type: 'string'
+    })
+    .option('method', {
+        alias: 'X',
+        type: 'string'
+    })
+    .option('verbose', {
+        alias: 'v',
+        type: 'boolean'
+    })
+    .demand(1)
+    .argv;
+
+var expect = unexpected.installPlugin(require('unexpected-http'));
+expect.output.installPlugin(require('magicpen-prism'));
+
+var url = commandLineOptions._.shift();
+if (!/^https?:/.test(url)) {
+    url = 'http://' + url;
+}
+
+var requestProperties = {url: url};
+
+if (commandLineOptions.method) {
+    requestProperties.method = commandLineOptions.method;
+}
+
+if (commandLineOptions.header) {
+    requestProperties.headers = {};
+    (Array.isArray(commandLineOptions.header) ? commandLineOptions.header : [commandLineOptions.header]).forEach(function (header) {
+        var matchKeyValue = header.match(/^([^:]*):\s?(.*)$/);
+        if (matchKeyValue) {
+            var headerName = matchKeyValue[1],
+                headerValue =  matchKeyValue[2];
+            (requestProperties.headers[headerName] = requestProperties.headers[headerName] || []).push(headerValue);
+        } else {
+            console.error('Cannot parse header: ' + matchKeyValue);
+        }
+    });
+}
+
+var expectedResponseProperties;
+if (commandLineOptions._.length === 1 && typeof commandLineOptions._[0] === 'number') {
+    expectedResponseProperties = commandLineOptions._[0];
+} else if (commandLineOptions._.length > 0) {
+    /*jshint evil:true*/
+    expectedResponseProperties = eval('({' + commandLineOptions._.join(',') + '})');
+    /*jshint evil:false*/
+} else {
+    expectedResponseProperties = {
+        statusCode: expect.it('to be within', 200, 299)
+    };
+}
+
+expect(requestProperties, 'to yield response', expectedResponseProperties, function (err, context) {
+    if (err) {
+        console.error(err.message);
+        process.exit(1);
+    } else {
+        if (commandLineOptions.verbose) {
+            console.log(unexpected.inspect(context.httpExchange).toString(unexpected.outputFormat()));
+        }
+        process.exit(0);
+    }
+});
