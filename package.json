@@ -32,7 +32,8 @@
   },
   "devDependencies": {
     "jshint": "2.5.10",
-    "mocha": "2.0.1"
+    "mocha": "2.0.1",
+    "unexpected": "5.0.0-beta23"
   },
   "scripts": {
     "lint": "jshint . bin/swirl ",
