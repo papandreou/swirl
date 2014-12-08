@@ -28,7 +28,7 @@
     "optimist": "0.6.1",
     "underscore": "1.7.0",
     "unexpected": "5.0.0-beta22",
-    "unexpected-http": "1.1.7"
+    "unexpected-http": "1.1.8"
   },
   "devDependencies": {
     "jshint": "2.5.10",
