@@ -2,6 +2,7 @@
 /*global console*/
 
 var unexpected = require('unexpected'),
+    urlModule = require('url'),
     commandLineOptions = require('optimist')
     .usage('$0 [--verbose] [-X <method>] [-H <header>] url [expectations...]')
     .option('header', {
@@ -115,6 +116,34 @@ if (uploadFile) {
     performRequest();
 }
 
+var styleByFragmentName = {
+    protocol: 'cyan',
+    slashes: 'gray',
+    auth: 'white',
+    hostname: 'green',
+    port: 'yellow',
+    pathname: 'white',
+    search: 'green',
+    hash: 'cyan'
+};
+
+unexpected.output.addStyle('url', function (url) {
+    var urlObj = urlModule.parse(url);
+    if (urlObj) {
+        ['protocol', 'slashes', 'auth', 'hostname', 'port', 'pathname', 'search', 'hash'].forEach(function (fragmentName) {
+            var value = urlObj[fragmentName];
+            if (fragmentName === 'port' && value) {
+                this.white(':');
+            } else if (fragmentName === 'slashes') {
+                value = value && '//';
+            }
+            if (value) {
+                this[styleByFragmentName[fragmentName]](value);
+            }
+        }, this);
+    }
+});
+
 function performRequest() {
     if (requestHeaders.toString() !== '') {
         requestProperties.headers = requestHeaders;
@@ -125,6 +154,7 @@ function performRequest() {
             if (!commandLineOptions.silent) {
                 if (!err._isUnexpected) {
                     console.log(
+                        unexpected.output.clone().url(url).toString(outputFormat),
                         unexpected.inspect(context.httpRequest.requestLine).toString(outputFormat)
                     );
                 }
@@ -136,6 +166,7 @@ function performRequest() {
                 console.log(unexpected.inspect(context.httpExchange).toString(outputFormat));
             } else if (!commandLineOptions.silent) {
                 console.log(
+                    unexpected.output.clone().url(url).toString(outputFormat),
                     unexpected.inspect(context.httpExchange.request.requestLine).toString(outputFormat) + ' => ' +
                     unexpected.inspect(context.httpExchange.response.statusLine).toString(outputFormat)
                 );
