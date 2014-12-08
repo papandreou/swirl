@@ -28,6 +28,10 @@ var unexpected = require('unexpected'),
         alias: 'v',
         type: 'boolean'
     })
+    .option('silent', {
+        alias: 's',
+        type: 'boolean'
+    })
     .demand(1)
     .argv;
 
@@ -117,11 +121,18 @@ function performRequest() {
     }
     expect(requestProperties, 'to yield response', expectedResponseProperties, function (err, context) {
         if (err) {
-            console.error(err.message);
+            if (!commandLineOptions.silent) {
+                console.error(err.message);
+            }
             process.exit(1);
         } else {
             if (commandLineOptions.verbose) {
                 console.log(unexpected.inspect(context.httpExchange).toString(unexpected.outputFormat()));
+            } else if (!commandLineOptions.silent) {
+                console.log(
+                    unexpected.inspect(context.httpExchange.request.requestLine).toString(unexpected.outputFormat()) + ' => ' +
+                    unexpected.inspect(context.httpExchange.response.statusLine).toString(unexpected.outputFormat())
+                );
             }
             process.exit(0);
         }
