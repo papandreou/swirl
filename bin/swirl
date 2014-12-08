@@ -128,7 +128,7 @@ var styleByFragmentName = {
     auth: 'white',
     hostname: 'green',
     port: 'yellow',
-    pathname: 'white',
+    pathname: 'gray',
     search: 'green',
     hash: 'cyan'
 };
@@ -160,8 +160,14 @@ function performRequest() {
             if (!commandLineOptions.silent) {
                 if (!err._isUnexpected) {
                     console.log(
-                        unexpected.output.clone().url(url).toString(outputFormat),
-                        unexpected.inspect(context.httpRequest.requestLine).toString(outputFormat)
+                        unexpected.output.clone()
+                            // Use messy.RequestLine's colors, but put in the complete url instead of the path:
+                            .append(unexpected.inspect(new messy.RequestLine({method: requestProperties.method || 'GET'})))
+                            .sp()
+                            .url(url)
+                            .sp()
+                            .append(unexpected.inspect(new messy.RequestLine({protocol: 'HTTP/1.1'})))
+                            .toString(outputFormat)
                     );
                 }
                 console.error(err.message);
