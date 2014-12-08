@@ -120,18 +120,24 @@ function performRequest() {
         requestProperties.headers = requestHeaders;
     }
     expect(requestProperties, 'to yield response', expectedResponseProperties, function (err, context) {
+        var outputFormat = unexpected.outputFormat();
         if (err) {
             if (!commandLineOptions.silent) {
+                if (!err._isUnexpected) {
+                    console.log(
+                        unexpected.inspect(context.httpRequest.requestLine).toString(outputFormat)
+                    );
+                }
                 console.error(err.message);
             }
             process.exit(1);
         } else {
             if (commandLineOptions.verbose) {
-                console.log(unexpected.inspect(context.httpExchange).toString(unexpected.outputFormat()));
+                console.log(unexpected.inspect(context.httpExchange).toString(outputFormat));
             } else if (!commandLineOptions.silent) {
                 console.log(
-                    unexpected.inspect(context.httpExchange.request.requestLine).toString(unexpected.outputFormat()) + ' => ' +
-                    unexpected.inspect(context.httpExchange.response.statusLine).toString(unexpected.outputFormat())
+                    unexpected.inspect(context.httpExchange.request.requestLine).toString(outputFormat) + ' => ' +
+                    unexpected.inspect(context.httpExchange.response.statusLine).toString(outputFormat)
                 );
             }
             process.exit(0);
