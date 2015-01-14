@@ -39,7 +39,7 @@ var unexpected = require('unexpected'),
 var unexpectedHttp = require('unexpected-http'),
     messy = unexpectedHttp.messy,
     fs = require('fs'),
-    expect = unexpected.installPlugin(require('unexpected-messy')).installPlugin(unexpectedHttp);
+    expect = unexpected.installPlugin(unexpectedHttp);
 expect.output.installPlugin(require('magicpen-prism'));
 
 var url = commandLineOptions._.shift();
