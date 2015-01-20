@@ -33,6 +33,15 @@ var unexpected = require('unexpected'),
         alias: 's',
         type: 'boolean'
     })
+    .option('cert', {
+        type: 'string'
+    })
+    .option('key', {
+        type: 'string'
+    })
+    .option('cacert', {
+        type: 'string'
+    })
     .demand(1)
     .argv;
 
@@ -64,6 +73,16 @@ if (commandLineOptions.header) {
             console.error('Cannot parse header: ' + header);
         }
     });
+}
+
+if (commandLineOptions.cert) {
+    requestProperties.cert = fs.readFileSync(commandLineOptions.cert);
+}
+if (commandLineOptions.key) {
+    requestProperties.key = fs.readFileSync(commandLineOptions.key);
+}
+if (commandLineOptions.cacert) {
+    requestProperties.ca = fs.readFileSync(commandLineOptions.cacert);
 }
 
 if (commandLineOptions.cookie) {
