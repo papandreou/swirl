@@ -96,7 +96,12 @@ if (commandLineOptions._.length === 1 && typeof commandLineOptions._[0] === 'num
     /*jshint evil:true*/
     expectedResponseProperties = eval('({' + commandLineOptions._.map(function (commandLineOption) {
         if (typeof commandLineOption === 'number') {
-            return 'statusCode:' + commandLineOption;
+            return 'statusLine:' + commandLineOption;
+        } else if (/^\d+\.\.\d+$/.test(commandLineOption)) {
+            var endpoints = commandLineOption.split('..').map(function (str) {
+                return parseInt(str, 10);
+            });
+            return "statusLine: expect.it('to be within', " + endpoints[0] + ', ' + endpoints[1] + ')';
         } else {
             return commandLineOption;
         }
@@ -104,7 +109,7 @@ if (commandLineOptions._.length === 1 && typeof commandLineOptions._[0] === 'num
     /*jshint evil:false*/
 } else {
     expectedResponseProperties = {
-        statusCode: expect.it('to be within', 200, 299)
+        statusLine: expect.it('to be within', 200, 299)
     };
 }
 
