@@ -28,7 +28,7 @@
     "optimist": "0.6.1",
     "underscore": "1.7.0",
     "unexpected": "5.8.0",
-    "unexpected-http": "1.4.2",
+    "unexpected-http": "1.5.0",
     "uninspected": "1.3.0"
   },
   "devDependencies": {
