@@ -1,6 +1,6 @@
 {
   "name": "swirl",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "CLI for testing HTTP servers using unexpected-http",
   "repository": {
     "type": "git",
