@@ -23,12 +23,14 @@
   },
   "homepage": "https://github.com/papandreou/swirl",
   "dependencies": {
-    "magicpen": "4.1.0",
-    "magicpen-prism": "1.0.0",
+    "magicpen": "4.6.0",
+    "magicpen-prism": "1.1.1",
+    "messy": "5.0.1",
     "optimist": "0.6.1",
     "underscore": "1.7.0",
-    "unexpected": "5.9.2",
-    "unexpected-http": "1.8.0",
+    "unexpected": "6.4.0",
+    "unexpected-http": "2.0.0",
+    "unexpected-messy": "2.16.1",
     "uninspected": "1.6.1"
   },
   "devDependencies": {
