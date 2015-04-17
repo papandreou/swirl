@@ -178,36 +178,35 @@ function performRequest() {
     if (requestHeaders.toString() !== '') {
         requestProperties.headers = requestHeaders;
     }
-    expect(requestProperties, 'to yield response', expectedResponseProperties, function (err, context) {
+    expect(requestProperties, 'to yield response', expectedResponseProperties).then(function (context) {
         var outputFormat = unexpected.outputFormat();
-        if (err) {
-            if (!commandLineOptions.silent) {
-                if (!err._isUnexpected) {
-                    console.log(
-                        unexpected.output.clone()
-                            // Use messy.RequestLine's colors, but put in the complete url instead of the path:
-                            .append(unexpected.inspect(new messy.RequestLine({method: requestProperties.method || 'GET'})))
-                            .sp()
-                            .url(url)
-                            .sp()
-                            .append(unexpected.inspect(new messy.RequestLine({protocol: 'HTTP/1.1'})))
-                            .toString(outputFormat)
-                    );
-                }
-                console.error(err.message);
-            }
-            process.exit(1);
-        } else {
-            if (commandLineOptions.verbose) {
-                console.log(unexpected.inspect(context.httpExchange).toString(outputFormat));
-            } else if (!commandLineOptions.silent) {
+        if (commandLineOptions.verbose) {
+            console.log(unexpected.inspect(context.httpExchange).toString(outputFormat));
+        } else if (!commandLineOptions.silent) {
+            console.log(
+                unexpected.output.clone().url(url).toString(outputFormat),
+                unexpected.inspect(context.httpExchange.request.requestLine).toString(outputFormat) + ' => ' +
+                unexpected.inspect(context.httpExchange.response.statusLine).toString(outputFormat)
+            );
+        }
+        process.exit(0);
+    }).caught(function (err) {
+        if (!commandLineOptions.silent) {
+            var outputFormat = unexpected.outputFormat();
+            if (!err._isUnexpected) {
                 console.log(
-                    unexpected.output.clone().url(url).toString(outputFormat),
-                    unexpected.inspect(context.httpExchange.request.requestLine).toString(outputFormat) + ' => ' +
-                    unexpected.inspect(context.httpExchange.response.statusLine).toString(outputFormat)
+                    unexpected.output.clone()
+                        // Use messy.RequestLine's colors, but put in the complete url instead of the path:
+                        .append(unexpected.inspect(new messy.RequestLine({method: requestProperties.method || 'GET'})))
+                        .sp()
+                        .url(url)
+                        .sp()
+                        .append(unexpected.inspect(new messy.RequestLine({protocol: 'HTTP/1.1'})))
+                        .toString(outputFormat)
                 );
             }
-            process.exit(0);
+            console.error(err.message);
         }
+        process.exit(1);
     });
 }
