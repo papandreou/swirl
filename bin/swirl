@@ -42,6 +42,10 @@ var unexpected = require('unexpected'),
     .option('cacert', {
         type: 'string'
     })
+    .option('insecure', {
+        alias: 'k',
+        type: 'boolean'
+    })
     .demand(1)
     .argv;
 
@@ -126,6 +130,10 @@ if (commandLineOptions.data) {
             return data;
         }
     }).join('&');
+}
+
+if (commandLineOptions.insecure) {
+    requestProperties.rejectUnauthorized = false;
 }
 
 var uploadFile = commandLineOptions['upload-file'];
