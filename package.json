@@ -34,8 +34,8 @@
     "uninspected": "1.7.0"
   },
   "devDependencies": {
-    "jshint": "2.5.10",
-    "mocha": "2.0.1"
+    "jshint": "2.7.0",
+    "mocha": "2.2.4"
   },
   "scripts": {
     "lint": "jshint . bin/swirl ",
