@@ -46,6 +46,9 @@ var unexpected = require('unexpected'),
         alias: 'k',
         type: 'boolean'
     })
+    .option('html', {
+        type: 'boolean'
+    })
     .demand(1)
     .argv;
 
@@ -188,6 +191,9 @@ function performRequest() {
     }
     expect(requestProperties, 'to yield response', expectedResponseProperties).then(function (context) {
         var outputFormat = unexpected.outputFormat();
+        if (commandLineOptions.html) {
+            outputFormat = 'html';
+        }
         if (commandLineOptions.verbose) {
             console.log(unexpected.inspect(context.httpExchange).toString(outputFormat));
         } else if (!commandLineOptions.silent) {
