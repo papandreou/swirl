@@ -3,6 +3,7 @@
 
 var unexpected = require('unexpected'),
     urlModule = require('url'),
+    pathModule = require('path'),
     commandLineOptions = require('optimist')
     .usage('$0 [--verbose] [-X <method>] [-H <header>] url [expectations...]')
     .option('header', {
@@ -48,6 +49,9 @@ var unexpected = require('unexpected'),
     })
     .option('html', {
         type: 'boolean'
+    })
+    .option('plugin', {
+        type: 'string'
     })
     .demand(1)
     .argv;
@@ -118,6 +122,15 @@ if (commandLineOptions._.length === 1 && typeof commandLineOptions._[0] === 'num
     expectedResponseProperties = {
         statusLine: expect.it('to be within', 200, 299)
     };
+}
+
+if (typeof commandLineOptions.plugin !== 'undefined') {
+    (Array.isArray(commandLineOptions.plugin) ? commandLineOptions.plugin : [commandLineOptions.plugin]).forEach(function (pluginName) {
+        if (/^[\.\/]/.test(pluginName)) {
+            pluginName = pathModule.resolve(process.cwd(), pluginName);
+        }
+        expect.installPlugin(require(pluginName));
+    });
 }
 
 if (commandLineOptions.data) {
