@@ -208,7 +208,7 @@ function performRequest() {
             outputFormat = 'html';
         }
         if (commandLineOptions.verbose) {
-            console.log(unexpected.inspect(context.httpExchange).toString(outputFormat));
+            console.log(unexpected.inspect(context.httpExchange, Infinity).toString(outputFormat));
         } else if (!commandLineOptions.silent) {
             console.log(
                 unexpected.output.clone().url(url).toString(outputFormat),
