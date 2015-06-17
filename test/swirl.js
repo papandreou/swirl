@@ -1,4 +1,4 @@
-/*global describe, setImmediate, it, __dirname*/
+/*global describe, it, __dirname*/
 var childProcess = require('child_process'),
     pathModule = require('path'),
     unexpected = require('unexpected');
