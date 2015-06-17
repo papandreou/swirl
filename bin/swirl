@@ -171,12 +171,12 @@ if (uploadFile) {
 }
 
 var styleByFragmentName = {
-    protocol: 'cyan',
+    protocol: 'white',
     slashes: 'gray',
     auth: 'white',
-    hostname: 'green',
-    port: 'yellow',
-    pathname: 'gray',
+    hostname: 'cyan',
+    port: 'gray',
+    pathname: 'white',
     search: 'green',
     hash: 'cyan'
 };
@@ -211,16 +211,24 @@ function performRequest() {
             console.log(unexpected.inspect(context.httpExchange, Infinity).toString(outputFormat));
         } else if (!commandLineOptions.silent) {
             console.log(
-                unexpected.output.clone().url(url).toString(outputFormat),
-                unexpected.inspect(context.httpExchange.request.requestLine).toString(outputFormat) + ' => ' +
-                unexpected.inspect(context.httpExchange.response.statusLine).toString(outputFormat)
+                unexpected.output.clone()
+                    .append(unexpected.inspect(new messy.RequestLine({method: context.httpExchange.request.method || 'GET'})))
+                    .sp()
+                    .url(url)
+                    .sp()
+                    .text('=>')
+                    .sp()
+                    .append(unexpected.inspect(context.httpExchange.response.statusLine))
+                    .toString(outputFormat)
             );
         }
         process.exit(0);
     }).caught(function (err) {
         if (!commandLineOptions.silent) {
             var outputFormat = unexpected.outputFormat();
-            if (!err._isUnexpected) {
+            if (err._isUnexpected) {
+                console.log(err.message.replace(/^\n/, ''));
+            } else {
                 console.log(
                     unexpected.output.clone()
                         // Use messy.RequestLine's colors, but put in the complete url instead of the path:
@@ -229,10 +237,15 @@ function performRequest() {
                         .url(url)
                         .sp()
                         .append(unexpected.inspect(new messy.RequestLine({protocol: 'HTTP/1.1'})))
+                        .sp()
+                        .text('=>')
+                        .sp()
+                        .block(function () {
+                            this.error(err.message);
+                        })
                         .toString(outputFormat)
                 );
             }
-            console.error(err.message);
         }
         process.exit(1);
     });
