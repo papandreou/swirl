@@ -35,7 +35,11 @@
   },
   "devDependencies": {
     "jshint": "2.7.0",
-    "mocha": "2.2.4"
+    "mocha": "2.2.4",
+    "unexpected": "8.2.0",
+    "unexpected-http": "4.0.0",
+    "unexpected-messy": "4.0.0",
+    "unexpected-stream": "1.1.2"
   },
   "scripts": {
     "lint": "jshint . bin/swirl ",
