@@ -227,9 +227,9 @@ function performRequest() {
         if (!commandLineOptions.silent) {
             var outputFormat = unexpected.outputFormat();
             if (err._isUnexpected) {
-                console.log(err.message.replace(/^\n/, ''));
+                console.error(err.message.replace(/^\n/, ''));
             } else {
-                console.log(
+                console.error(
                     unexpected.output.clone()
                         // Use messy.RequestLine's colors, but put in the complete url instead of the path:
                         .append(unexpected.inspect(new messy.RequestLine({method: requestProperties.method || 'GET'})))
