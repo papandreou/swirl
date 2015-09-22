@@ -208,20 +208,20 @@ function performRequest() {
             outputFormat = 'html';
         }
         if (commandLineOptions.verbose) {
-            console.log(unexpected.inspect(context.httpExchange, Infinity).toString(outputFormat));
+            console.log(unexpected.createOutput(outputFormat).appendInspected(context.httpExchange, Infinity).toString());
         } else if (!commandLineOptions.silent) {
             console.log(
-                unexpected.output.clone()
-                    .append(unexpected.inspect(new messy.RequestLine({method: context.httpExchange.request.method || 'GET'})))
+                unexpected.createOutput(outputFormat)
+                    .appendInspected(new messy.RequestLine({method: context.httpExchange.request.method || 'GET'}))
                     .sp()
                     .url(url)
                     .sp()
-                    .append(unexpected.inspect(new messy.RequestLine({protocol: context.httpExchange.request.protocol || 'HTTP/1.1'})))
+                    .appendInspected(new messy.RequestLine({protocol: context.httpExchange.request.protocol || 'HTTP/1.1'}))
                     .sp()
                     .text('=>')
                     .sp()
-                    .append(unexpected.inspect(context.httpExchange.response.statusLine))
-                    .toString(outputFormat)
+                    .appendInspected(context.httpExchange.response.statusLine)
+                    .toString()
             );
         }
         process.exit(0);
@@ -232,20 +232,20 @@ function performRequest() {
                 console.error(err.message.replace(/^\n/, ''));
             } else {
                 console.error(
-                    unexpected.output.clone()
+                    unexpected.createOutput(outputFormat)
                         // Use messy.RequestLine's colors, but put in the complete url instead of the path:
-                        .append(unexpected.inspect(new messy.RequestLine({method: requestProperties.method || 'GET'})))
+                        .appendInspected(new messy.RequestLine({method: requestProperties.method || 'GET'}))
                         .sp()
                         .url(url)
                         .sp()
-                        .append(unexpected.inspect(new messy.RequestLine({protocol: 'HTTP/1.1'})))
+                        .appendInspected(new messy.RequestLine({protocol: 'HTTP/1.1'}))
                         .sp()
                         .text('=>')
                         .sp()
                         .block(function () {
                             this.error(err.message);
                         })
-                        .toString(outputFormat)
+                        .toString()
                 );
             }
         }
