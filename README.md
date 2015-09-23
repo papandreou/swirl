@@ -8,7 +8,7 @@ CLI for testing HTTP servers using a [curl](http://curl.haxx.se/)-like syntax. P
 [![Dependency Status](https://david-dm.org/papandreou/swirl.svg)](https://david-dm.org/papandreou/swirl)
 
 This basic selection of [curl switches](http://curl.haxx.se/docs/manpage.html)
-have been implemented, but nowhere near all of them:
+has been implemented, but nowhere near all of them:
 
 * `--header`, `-H`
 * `--upload-file`, `-T`
