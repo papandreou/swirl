@@ -69,9 +69,7 @@ if (!/^https?:/.test(url)) {
 
 var requestProperties = {url: url};
 
-if (commandLineOptions.method) {
-    requestProperties.method = commandLineOptions.method;
-}
+requestProperties.method = commandLineOptions.method || 'GET';
 
 var requestHeaders = new messy.Headers();
 
