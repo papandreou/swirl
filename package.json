@@ -26,8 +26,8 @@
     "magicpen-prism": "2.2.1",
     "optimist": "0.6.1",
     "underscore": "1.7.0",
-    "unexpected": "9.13.0",
-    "unexpected-http": "4.8.0"
+    "unexpected": "10.17.0",
+    "unexpected-http": "5.5.0"
   },
   "devDependencies": {
     "jshint": "2.9.3",
