@@ -25,7 +25,6 @@
   "dependencies": {
     "magicpen-prism": "2.2.1",
     "optimist": "0.6.1",
-    "underscore": "1.7.0",
     "unexpected": "10.17.0",
     "unexpected-http": "5.5.0"
   },
