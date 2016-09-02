@@ -30,9 +30,9 @@
     "unexpected-http": "4.8.0"
   },
   "devDependencies": {
-    "jshint": "2.7.0",
-    "mocha": "2.2.4",
-    "unexpected-stream": "1.2.1"
+    "jshint": "2.9.3",
+    "mocha": "3.0.2",
+    "unexpected-stream": "2.0.4"
   },
   "scripts": {
     "lint": "jshint . bin/swirl ",
