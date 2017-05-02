@@ -23,15 +23,15 @@
   },
   "homepage": "https://github.com/papandreou/swirl",
   "dependencies": {
-    "magicpen-prism": "2.2.1",
+    "magicpen-prism": "2.3.0",
     "optimist": "0.6.1",
-    "unexpected": "10.17.0",
-    "unexpected-http": "5.5.0"
+    "unexpected": "10.27.0",
+    "unexpected-http": "6.0.0"
   },
   "devDependencies": {
-    "jshint": "2.9.3",
-    "mocha": "3.0.2",
-    "unexpected-stream": "2.0.4"
+    "jshint": "2.9.4",
+    "mocha": "3.3.0",
+    "unexpected-stream": "2.1.0"
   },
   "scripts": {
     "lint": "jshint . bin/swirl ",
