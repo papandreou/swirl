@@ -28,7 +28,7 @@ describe('swirl', function () {
         return expect.promise.all([
             expect(swirl, 'to exit with', 1),
             expect(
-                swirl.stderr,
+                swirl.stdout,
                 'to yield output satisfying',
                 'when decoded as', 'utf-8',
                 'to satisfy',
