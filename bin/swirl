@@ -67,6 +67,11 @@ if (!/^https?:/.test(url)) {
     url = 'http://' + url;
 }
 
+var outputFormat = unexpected.outputFormat();
+if (commandLineOptions.html) {
+    outputFormat = 'html';
+}
+
 var requestProperties = {url: url};
 
 requestProperties.method = commandLineOptions.method || 'GET';
@@ -201,10 +206,6 @@ function performRequest() {
         requestProperties.headers = requestHeaders;
     }
     expect(requestProperties, 'to yield response', expectedResponseProperties).then(function (context) {
-        var outputFormat = unexpected.outputFormat();
-        if (commandLineOptions.html) {
-            outputFormat = 'html';
-        }
         if (commandLineOptions.verbose) {
             console.log(unexpected.createOutput(outputFormat).appendInspected(context.httpExchange, Infinity).toString());
         } else if (!commandLineOptions.silent) {
@@ -225,9 +226,8 @@ function performRequest() {
         process.exit(0);
     }).caught(function (err) {
         if (!commandLineOptions.silent) {
-            var outputFormat = unexpected.outputFormat();
             if (err._isUnexpected) {
-                console.error(err.message.replace(/^\n/, ''));
+                console.error(err.getErrorMessage(outputFormat).toString());
             } else {
                 console.error(
                     unexpected.createOutput(outputFormat)
