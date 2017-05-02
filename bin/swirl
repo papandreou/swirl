@@ -227,9 +227,9 @@ function performRequest() {
     }).caught(function (err) {
         if (!commandLineOptions.silent) {
             if (err._isUnexpected) {
-                console.error(err.getErrorMessage(outputFormat).toString());
+                console.log(err.getErrorMessage(outputFormat).toString());
             } else {
-                console.error(
+                console.log(
                     unexpected.createOutput(outputFormat)
                         // Use messy.RequestLine's colors, but put in the complete url instead of the path:
                         .appendInspected(new messy.RequestLine({method: requestProperties.method || 'GET'}))
